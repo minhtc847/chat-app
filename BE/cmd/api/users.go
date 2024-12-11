@@ -1,0 +1,80 @@
+package main
+
+import (
+	"BE-chat-app/internal/data"
+	"BE-chat-app/internal/validator"
+	"errors"
+	"net/http"
+)
+
+func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Request) {
+	var input struct {
+		Name     string `json:"name"`
+		Email    string `json:"email"`
+		Gender   bool   `json:"gender"`
+		Password string `json:"password"`
+	}
+	err := app.readJSON(w, r, &input)
+	if err != nil {
+		app.badRequestResponse(w, r, err)
+		return
+	}
+	user := &data.Profile{
+		Name:      input.Name,
+		Email:     input.Email,
+		Gender:    input.Gender,
+		Activated: false,
+	}
+	err = user.Password.Set(input.Password)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+		return
+	}
+	v := validator.New()
+	if data.ValidateProfile(v, user); !v.Valid() {
+		app.failedValidationResponse(w, r, v.Errors)
+		return
+	}
+	err = app.models.Profiles.Insert(user)
+	if err != nil {
+		switch {
+		case errors.Is(err, data.ErrDuplicateEmail):
+			v.AddError("email", "a user with this email address already exists")
+			app.failedValidationResponse(w, r, v.Errors)
+		default:
+			app.serverErrorResponse(w, r, err)
+		}
+		return
+	}
+
+	//// Generate activation token
+	//token := GenerateToken()
+	//redisKey := fmt.Sprintf("activation:%s", token)
+	//redisExpiration := 24 * 3 * time.Hour // Token expiration time
+	//
+	//// Store token in Redis
+	//err = app.storeActivationToken(redisKey, user.ID.String(), redisExpiration)
+	//if err != nil {
+	//	app.serverErrorResponse(w, r, err)
+	//	return
+	//}
+
+	//app.background(func() {
+	//	data := map[string]any{
+	//		"activationToken": token,
+	//		"userID":          user.ID,
+	//	}
+	//
+	//	err = app.mailer.Send(user.Email, "user_welcome.tmpl", data)
+	//	if err != nil {
+	//		// Importantly, if there is an error sending the email then we use the
+	//		// app.logger.PrintError() helper to manage it, instead of the
+	//		// app.serverErrorResponse() helper like before.
+	//		app.logger.PrintError(err, nil)
+	//	}
+	//})
+	err = app.writeJSON(w, http.StatusCreated, envelope{"user": user}, nil)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+	}
+}
