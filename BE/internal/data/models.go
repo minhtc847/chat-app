@@ -19,10 +19,18 @@ type Models struct {
 		Update(profile *Profile) error
 		Get(id uuid.UUID) (*Profile, error)
 	}
+
+	Friends interface {
+		GetAllFriends(userID uuid.UUID) (*[]uuid.UUID, error)
+		SendInvite(requesterID, receiverID uuid.UUID) error
+		GetInvite(requesterID, receiverID uuid.UUID) (*Friendship, error)
+		ConfirmInvite(friendshipID uuid.UUID, status string) error
+	}
 }
 
 func NewModels(db *sql.DB) Models {
 	return Models{
 		Profiles: ProfileModel{DB: db},
+		Friends:  ProfileModel{DB: db},
 	}
 }

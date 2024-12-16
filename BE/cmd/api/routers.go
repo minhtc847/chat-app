@@ -12,6 +12,10 @@ func (app *application) routes() http.Handler {
 
 	router.HandlerFunc(http.MethodPost, "/users", app.registerUserHandler)
 
+	router.HandlerFunc(http.MethodGet, "/friends", app.getFriendsHandler)
+	router.HandlerFunc(http.MethodPost, "/friends", app.sendInviteHandler)
+	router.HandlerFunc(http.MethodPut, "/friends", app.confirmInviteHandler)
+
 	return app.enableCORS(app.authenticate(router))
 
 }
