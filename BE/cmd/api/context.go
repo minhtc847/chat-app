@@ -22,3 +22,15 @@ func (app *application) contextGetUser(r *http.Request) *data.Profile {
 	}
 	return user
 }
+func (app *application) contextSetToken(r *http.Request, token string) *http.Request {
+	ctx := context.WithValue(r.Context(), "token", token)
+	return r.WithContext(ctx)
+}
+
+func (app *application) contextGetToken(r *http.Request) *string {
+	token, ok := r.Context().Value("token").(string)
+	if !ok {
+		panic("missing token value in request context")
+	}
+	return &token
+}

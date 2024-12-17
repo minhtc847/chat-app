@@ -11,6 +11,7 @@ import (
 	"time"
 )
 
+// login
 func (app *application) createAuthenticationJWTTokenHandler(w http.ResponseWriter, r *http.Request) {
 	var input struct {
 		Email    string `json:"email"`
@@ -47,6 +48,10 @@ func (app *application) createAuthenticationJWTTokenHandler(w http.ResponseWrite
 		app.invalidCredentialsResponse(w, r)
 		return
 	}
+	if !profile.Activated {
+		app.inactiveAccountResponse(w, r)
+		return
+	}
 	// Create a JWT claims struct containing the user ID as the subject, with an issued
 	// time of now and validity window of the next 24 hours. We also set the issuer and
 	// audience to a unique identifier for our application.
@@ -79,4 +84,19 @@ func GenerateToken() string {
 		panic(err) // Handle error appropriately in production
 	}
 	return hex.EncodeToString(b)
+}
+
+func (app *application) logout(w http.ResponseWriter, r *http.Request) {
+
+	token := app.contextGetToken(r)
+	userId := app.contextGetUser(r).ID.String()
+	err := app.redis.storeLogoutToken(*token, userId, 24*time.Hour)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+		return
+	}
+	err = app.writeJSON(w, http.StatusOK, envelope{"message": "logout successfully"}, nil)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+	}
 }
