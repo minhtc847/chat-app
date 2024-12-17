@@ -32,6 +32,7 @@ type Models struct {
 		Insert(conversation *Conversations) error
 		Get(id uuid.UUID) (*Conversations, error)
 		GetByProfiles(profileOneId, profileTwoId uuid.UUID) (*Conversations, error)
+		Delete(id uuid.UUID) error
 	}
 }
 

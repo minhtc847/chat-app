@@ -49,3 +49,26 @@ func (app *application) createConversationsHandler(w http.ResponseWriter, r *htt
 	if err != nil {
 	}
 }
+func (app *application) deleteConversationsHandler(w http.ResponseWriter, r *http.Request) {
+
+	conservationId := uuid.MustParse(app.readStringParam(r, "id"))
+
+	conservation, err := app.models.Conversations.Get(conservationId)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+		return
+	}
+	if conservation.ProfileOneId != app.contextGetUser(r).ID && conservation.ProfileTwoId != app.contextGetUser(r).ID {
+		app.notFoundResponse(w, r)
+		return
+	}
+	err = app.models.Conversations.Delete(conservationId)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+		return
+	}
+	err = app.writeJSON(w, http.StatusOK, envelope{"message": "delete successfully"}, nil)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+	}
+}

@@ -80,12 +80,32 @@ func (m MessageModel) Get(id uuid.UUID) (*Message, error) {
 	return &message, nil
 }
 func (m MessageModel) Update(message *Message) error {
-	query := `UPDATE message SET channel_id = $1, conversation_id = $2, sender_profile_id = $3, content = $4, updated_at = $5, deleted = $6, file_url = $7, type = $8 WHERE id = $9`
+	query := `UPDATE message SET conversation_id = $1, sender_profile_id = $2, content = $3, updated_at = $4, deleted = $5, file_url = $6, type = $7 
+               WHERE id = $8`
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+	_, err := m.DB.ExecContext(ctx, query,
+		message.ConversationId,
+		message.SenderProfileId,
+		message.Content,
+		time.Now(),
+		message.Deleted,
+		message.FileUrl,
+		message.Type,
+		message.ID,
+	)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+func (m MessageModel) UpdateToChannel(message *Message) error {
+	query := `UPDATE message SET channel_id = $1, sender_profile_id = $2, content = $3, updated_at = $4, deleted = $5, file_url = $6,
+                   type = $7 where id = $8`
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 	_, err := m.DB.ExecContext(ctx, query,
 		message.ChannelId,
-		message.ConversationId,
 		message.SenderProfileId,
 		message.Content,
 		time.Now(),

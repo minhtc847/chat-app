@@ -14,6 +14,7 @@ type Conversations struct {
 	ProfileTwoId uuid.UUID `json:"profile_two_id"`
 	CreatedAt    time.Time `json:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at"`
+	Deleted      bool      `json:"deleted"`
 }
 
 type ConversationModel struct {
@@ -41,6 +42,7 @@ func (c ConversationModel) Get(id uuid.UUID) (*Conversations, error) {
 		&conversation.ProfileTwoId,
 		&conversation.CreatedAt,
 		&conversation.UpdatedAt,
+		&conversation.Deleted,
 	)
 	if err != nil {
 		switch {
@@ -63,11 +65,19 @@ func (m ConversationModel) GetByProfiles(profileOneId, profileTwoId uuid.UUID) (
 	var conversation Conversations
 	err := m.DB.QueryRow(query, profileOneId, profileTwoId).Scan(
 		&conversation.ID, &conversation.ProfileOneId, &conversation.ProfileTwoId,
-		&conversation.CreatedAt, &conversation.UpdatedAt,
+		&conversation.CreatedAt, &conversation.UpdatedAt, &conversation.Deleted,
 	)
 
 	if err == sql.ErrNoRows {
 		return nil, nil
 	}
 	return &conversation, err
+}
+
+func (m ConversationModel) Delete(id uuid.UUID) error {
+	query := `UPDATE conversation SET deleted = true WHERE id = $1`
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+	_, err := m.DB.ExecContext(ctx, query, id)
+	return err
 }
