@@ -5,6 +5,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 	"time"
@@ -126,7 +127,7 @@ func (m ProfileModel) Update(profile *Profile) error {
 	args := []interface{}{profile.Email, profile.Name, profile.ImageURL, profile.Gender, profile.Password.hash, profile.UpdatedAt, profile.Activated, profile.ID}
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
-	err := m.DB.QueryRowContext(ctx, query, args...).Scan(&profile.ID, &profile.Email, &profile.Name, &profile.ImageURL, &profile.Gender, &profile.Password.hash, &profile.CreatedAt, &profile.UpdatedAt, &profile.Activated)
+	_, err := m.DB.ExecContext(ctx, query, args...)
 	if err != nil {
 		switch {
 		case err.Error() == `pq: duplicate key value violates unique constraint "profile_unique_email"`:
@@ -138,6 +139,7 @@ func (m ProfileModel) Update(profile *Profile) error {
 	return nil
 }
 func (m ProfileModel) Get(id uuid.UUID) (*Profile, error) {
+	fmt.Println(id.String())
 	query := `
         SELECT id, email, name, image_url, gender, password_hash, created_at, updated_at, activated
 		FROM profile
@@ -145,7 +147,7 @@ func (m ProfileModel) Get(id uuid.UUID) (*Profile, error) {
 	var profile Profile
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
-	err := m.DB.QueryRowContext(ctx, query, id).Scan(
+	err := m.DB.QueryRowContext(ctx, query, id.String()).Scan(
 		&profile.ID,
 		&profile.Email,
 		&profile.Name,
