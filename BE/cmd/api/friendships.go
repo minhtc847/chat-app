@@ -2,17 +2,12 @@ package main
 
 import (
 	"BE-chat-app/internal/data"
-	"github.com/google/uuid"
 	"github.com/julienschmidt/httprouter"
 	"net/http"
 )
 
 func (app *application) getFriendsHandler(w http.ResponseWriter, r *http.Request) {
-	userID, err := uuid.Parse("e69d784c-71f2-453b-9331-bbb2871dbbae")
-	if err != nil {
-		app.badRequestResponse(w, r, err)
-		return
-	}
+	userID := app.contextGetUser(r).ID
 
 	friends, err := app.models.Friends.GetAllFriends(userID)
 	if err != nil {
@@ -31,11 +26,7 @@ func (app *application) getFriendsHandler(w http.ResponseWriter, r *http.Request
 }
 
 func (app *application) sendInviteHandler(w http.ResponseWriter, r *http.Request) {
-	userID, err := uuid.Parse("e69d784c-71f2-453b-9331-bbb2871dbbae")
-	if err != nil {
-		app.badRequestResponse(w, r, err)
-		return
-	}
+	userID := app.contextGetUser(r).ID
 
 	profileID, err := app.readUUIDParam(r)
 	if err != nil {
@@ -60,11 +51,7 @@ func (app *application) sendInviteHandler(w http.ResponseWriter, r *http.Request
 }
 
 func (app *application) confirmInviteHandler(w http.ResponseWriter, r *http.Request) {
-	userID, err := uuid.Parse("05a624df-8f7c-473d-a118-eb2f21104e4b")
-	if err != nil {
-		app.badRequestResponse(w, r, err)
-		return
-	}
+	userID := app.contextGetUser(r).ID
 
 	profileID, err := app.readUUIDParam(r)
 	if err != nil {
