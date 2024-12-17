@@ -8,13 +8,9 @@ import (
 )
 
 func (app *application) getMessagesByConversation(w http.ResponseWriter, r *http.Request) {
-	qs := r.URL.Query()
-	conservationId, err := uuid.Parse(app.readString(qs, "conversation_id", ""))
-	if err != nil {
-		app.badRequestResponse(w, r, fmt.Errorf("invalid conversation_id"))
-		return
-	}
-	timestampStr := app.readString(qs, "timestamp", "")
+
+	conservationId := uuid.MustParse(app.readStringParam(r, "conversation_id"))
+	timestampStr := app.readStringParam(r, "timestamp")
 	timestamp, err := time.Parse(time.RFC3339, timestampStr)
 	if err != nil {
 		app.badRequestResponse(w, r, fmt.Errorf("invalid timestamp"))

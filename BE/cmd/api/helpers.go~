@@ -26,7 +26,6 @@ func (app *application) readStringParam(r *http.Request, key string) string {
 	str := params.ByName(key)
 	return str
 }
-
 type envelope map[string]any
 
 func (app *application) writeJSON(w http.ResponseWriter, status int, data envelope, headers http.Header) error {
