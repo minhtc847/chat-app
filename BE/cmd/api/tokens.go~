@@ -6,6 +6,7 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"errors"
+	"fmt"
 	"github.com/pascaldekloe/jwt"
 	"net/http"
 	"time"
@@ -39,6 +40,8 @@ func (app *application) createAuthenticationJWTTokenHandler(w http.ResponseWrite
 		}
 		return
 	}
+	fmt.Println(profile.ID.String())
+	fmt.Printf(profile.Name)
 	match, err := profile.Password.Matches(input.Password)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)

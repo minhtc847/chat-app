@@ -21,7 +21,7 @@ The ChatApp Team
 <p>Hi,</p>
 <p>Thanks for signing up for a ChatApp account. We're excited to have you on board!</p>
 <p>For future reference, your user ID number is {{.userID}}.</p>
-<p>Please send a request to the <a href="http://localhost:4000/users/activate?token={{.activationToken}}">Activate</a> endpoint with the
+<p>Please send a request to the <code>PUT /users/activated</code> endpoint with the
 following JSON body to activate your account:</p>
 <pre><code>
 {"token": "{{.activationToken}}"}

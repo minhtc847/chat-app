@@ -32,6 +32,11 @@ func (app *application) authenticate(next http.Handler) http.Handler {
 		}
 		// Extract the actual authentication token from the header parts.
 		token := headerParts[1]
+
+		if app.redis.isLogoutToken(token) {
+			app.badRequestResponse(w, r, errors.New("invalid token"))
+			return
+		}
 		// Parse the JWT and extract the claims. This will return an error if the JWT
 		// contents doesn't match the signature (i.e. the token has been tampered with)
 		// or the algorithm isn't valid.
@@ -81,6 +86,7 @@ func (app *application) authenticate(next http.Handler) http.Handler {
 		}
 		// Add the user record to the request context and continue as normal.
 		r = app.contextSetUser(r, user)
+		r = app.contextSetToken(r, token)
 		next.ServeHTTP(w, r)
 	})
 }

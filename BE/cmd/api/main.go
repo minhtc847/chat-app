@@ -52,7 +52,7 @@ type application struct {
 	logger *jsonlog.Logger
 	models data.Models
 	mailer mailer.Mailer
-	redis  *redis.Client
+	redis  *RedisLocal
 }
 
 func main() {
@@ -69,9 +69,13 @@ func main() {
 		fmt.Printf("Invalid PORT value: %s\n", smtpPort)
 		smtpPort = 4000 // Use a default value if conversion fails
 	}
-	smtpUsername := os.Getenv("SMTP_USERNAME")
-	smtpPassword := os.Getenv("SMTP_PASSWORD")
+	smtpUsername := os.Getenv("SMTP_USER")
+	smtpPassword := os.Getenv("SMTP_PASS")
 	smtpSender := os.Getenv("SMTP_SENDER")
+
+	fmt.Printf("SMTP_PORT: %d\n", smtpPort)
+	fmt.Printf("SMTP_USERNAME: %s\n", smtpUsername)
+
 	corsTrustOrigin := os.Getenv("CORS_TRUST_ORIGIN")
 	jwtSecret := os.Getenv("JWT_SECRET")
 	var cfg config
@@ -121,6 +125,8 @@ func main() {
 	//defer redisClient.Close()
 	//logger.PrintInfo("Redis connection established", nil)
 
+	redisLocal := NewRedisLocal()
+
 	db, err := openDB(cfg)
 	if err != nil {
 		logger.PrintFatal(err, nil)
@@ -138,7 +144,7 @@ func main() {
 			cfg.smtp.username,
 			cfg.smtp.password,
 			cfg.smtp.sender),
-		//redis: redisClient,
+		redis: redisLocal,
 	}
 
 	srv := &http.Server{
@@ -180,32 +186,32 @@ func openDB(cfg config) (*sql.DB, error) {
 	return db, nil
 }
 
-//func openRedis(cfg config) (*redis.Client, error) {
-//	//opt := &redis.Options{
-//	//	Addr:        cfg.redis.addr,
-//	//	Password:    cfg.redis.password, // Leave empty for no password
-//	//	DB:          cfg.redis.db,       // Default DB
-//	//	DialTimeout: 10 * time.Second,
-//	//	Username:    "default",
-//	//}
-//
-//	opt := &redis.Options{
-//		Addr:     "redis-15133.c252.ap-southeast-1-1.ec2.redns.redis-cloud.com:15133",
-//		Username: "default",
-//		Password: "1JMxgARJe3EDrZlRo7NDQBFsYN1C4JOT",
-//		DB:       0,
-//	}
-//	client := redis.NewClient(opt)
-//
-//	fmt.Printf("Redis connection established at %s", opt.Addr)
-//	// Test the connection
-//	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-//	defer cancel()
-//
-//	_, err := client.Ping(ctx).Result()
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	return client, nil
-//}
+func openRedis(cfg config) (*redis.Client, error) {
+	//opt := &redis.Options{
+	//	Addr:        cfg.redis.addr,
+	//	Password:    cfg.redis.password, // Leave empty for no password
+	//	DB:          cfg.redis.db,       // Default DB
+	//	DialTimeout: 10 * time.Second,
+	//	Username:    "default",
+	//}
+
+	opt := &redis.Options{
+		Addr:     "redis-15133.c252.ap-southeast-1-1.ec2.redns.redis-cloud.com:15133",
+		Username: "default",
+		Password: "1JMxgARJe3EDrZlRo7NDQBFsYN1C4JOT",
+		DB:       0,
+	}
+	client := redis.NewClient(opt)
+
+	fmt.Printf("Redis connection established at %s", opt.Addr)
+	// Test the connection
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	_, err := client.Ping(ctx).Result()
+	if err != nil {
+		return nil, err
+	}
+
+	return client, nil
+}

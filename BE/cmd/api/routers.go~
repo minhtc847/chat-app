@@ -7,11 +7,19 @@ import (
 
 func (app *application) routes() http.Handler {
 	router := httprouter.New()
+	hub := NewChatHub()
+
+	router.GET("/ws/conversation", func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+		app.ServeConversationChat(hub, w, r)
+	})
 	router.NotFound = http.HandlerFunc(app.notFoundResponse)
 	router.MethodNotAllowed = http.HandlerFunc(app.methodNotAllowedResponse)
 
-	router.HandlerFunc(http.MethodPost, "/v1/users", app.registerUserHandler)
+	router.HandlerFunc(http.MethodPost, "/users", app.registerUserHandler)
 
+	router.HandlerFunc(http.MethodGet, "/users/activate", app.activateUserHandler)
+	router.HandlerFunc(http.MethodPost, "/users/login", app.createAuthenticationJWTTokenHandler)
+	router.HandlerFunc(http.MethodPost, "/users/logout", app.requireAuthenticatedUser(app.logout))
 	return app.enableCORS(app.authenticate(router))
 
 }
