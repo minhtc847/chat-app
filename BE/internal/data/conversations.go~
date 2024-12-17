@@ -1,0 +1,73 @@
+package data
+
+import (
+	"context"
+	"database/sql"
+	"errors"
+	"github.com/google/uuid"
+	"time"
+)
+
+type Conversations struct {
+	ID           uuid.UUID `json:"id"`
+	ProfileOneId uuid.UUID `json:"profile_one_id"`
+	ProfileTwoId uuid.UUID `json:"profile_two_id"`
+	CreatedAt    time.Time `json:"created_at"`
+	UpdatedAt    time.Time `json:"updated_at"`
+}
+
+type ConversationModel struct {
+	DB *sql.DB
+}
+
+func (c ConversationModel) Insert(conversation *Conversations) error {
+	query := `INSERT INTO conversation (profile_one_id, profile_two_id) VALUES ($1, $2) RETURNING id`
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+	return c.DB.QueryRowContext(ctx, query,
+		conversation.ProfileOneId,
+		conversation.ProfileTwoId,
+	).Scan(&conversation.ID)
+}
+
+func (c ConversationModel) Get(id uuid.UUID) (*Conversations, error) {
+	query := `SELECT id, profile_one_id, profile_two_id, created_at, updated_at FROM conversation WHERE id = $1`
+	var conversation Conversations
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+	err := c.DB.QueryRowContext(ctx, query, id).Scan(
+		&conversation.ID,
+		&conversation.ProfileOneId,
+		&conversation.ProfileTwoId,
+		&conversation.CreatedAt,
+		&conversation.UpdatedAt,
+	)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, ErrRecordNotFound
+		default:
+			return nil, err
+		}
+	}
+	return &conversation, nil
+}
+func (m ConversationModel) GetByProfiles(profileOneId, profileTwoId uuid.UUID) (*Conversations, error) {
+	query := `
+		SELECT id, profile_one_id, profile_two_id, created_at, updated_at 
+		FROM conversations 
+		WHERE (profile_one_id = $1 AND profile_two_id = $2) 
+		   OR (profile_one_id = $2 AND profile_two_id = $1)
+		LIMIT 1`
+
+	var conversation Conversations
+	err := m.DB.QueryRow(query, profileOneId, profileTwoId).Scan(
+		&conversation.ID, &conversation.ProfileOneId, &conversation.ProfileTwoId,
+		&conversation.CreatedAt, &conversation.UpdatedAt,
+	)
+
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+	return &conversation, err
+}
