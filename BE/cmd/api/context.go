@@ -27,10 +27,10 @@ func (app *application) contextSetToken(r *http.Request, token string) *http.Req
 	return r.WithContext(ctx)
 }
 
-func (app *application) contextGetToken(r *http.Request) string {
+func (app *application) contextGetToken(r *http.Request) *string {
 	token, ok := r.Context().Value("token").(string)
 	if !ok {
 		panic("missing token value in request context")
 	}
-	return token
+	return &token
 }

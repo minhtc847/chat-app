@@ -20,6 +20,11 @@ func (app *application) routes() http.Handler {
 	router.HandlerFunc(http.MethodGet, "/users/activate", app.activateUserHandler)
 	router.HandlerFunc(http.MethodPost, "/users/login", app.createAuthenticationJWTTokenHandler)
 	router.HandlerFunc(http.MethodGet, "/users/logout", app.requireAuthenticatedUser(app.logout))
+	router.HandlerFunc(http.MethodGet, "/friends", app.requireAuthenticatedUser(app.getFriendsHandler))
+	router.HandlerFunc(http.MethodPost, "/friends/:id", app.requireAuthenticatedUser(app.sendInviteHandler))
+	router.HandlerFunc(http.MethodPut, "/friends/:id/:status", app.requireAuthenticatedUser(app.confirmInviteHandler))
+	router.HandlerFunc(http.MethodPost, "/members/:id", app.requireAuthenticatedUser(app.addMembersToGroupHandler))
+	router.HandlerFunc(http.MethodPost, "/channels", app.requireAuthenticatedUser(app.createChannelHandler))
 
 	router.HandlerFunc(http.MethodGet, "/conversation/:id/messages", app.requireAuthenticatedUser(app.getMessagesByConversation))
 	router.HandlerFunc(http.MethodDelete, "/conversation/delete/:id", app.requireAuthenticatedUser(app.deleteConversationsHandler))
