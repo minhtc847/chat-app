@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/google/uuid"
 	"github.com/julienschmidt/httprouter"
 	"io"
 	"net/http"
@@ -25,6 +26,14 @@ func (app *application) readStringParam(r *http.Request, key string) string {
 	params := httprouter.ParamsFromContext(r.Context())
 	str := params.ByName(key)
 	return str
+}
+func (app *application) readUUIDParam(r *http.Request) (uuid.UUID, error) {
+	params := httprouter.ParamsFromContext(r.Context())
+	id, err := uuid.Parse(params.ByName("id"))
+	if err != nil {
+		return uuid.UUID{}, errors.New("invalid id parameter")
+	}
+	return id, nil
 }
 
 type envelope map[string]any
