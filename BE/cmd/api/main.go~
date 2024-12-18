@@ -52,22 +52,35 @@ type application struct {
 	logger *jsonlog.Logger
 	models data.Models
 	mailer mailer.Mailer
+<<<<<<< HEAD
 	redis  *RedisLocal
 }
 
 func main() {
+=======
+	redis  *redis.Client
+}
+
+func main() {
+
+>>>>>>> origin/UC05
 	if os.Getenv("RENDER") == "" { // Check if not running on Render
 		if err := godotenv.Load("./.env"); err != nil {
 			fmt.Println("No .env file found, using environment variables")
 		}
 	}
+<<<<<<< HEAD
 	dbDsn := os.Getenv("DB_DSN")
+=======
+	dbDns := os.Getenv("DB_DSN")
+>>>>>>> origin/UC05
 	smtpHost := os.Getenv("SMTP_HOST")
 	smtpPort, err := strconv.Atoi(os.Getenv("SMTP_PORT"))
 	if err != nil {
 		fmt.Printf("Invalid PORT value: %s\n", smtpPort)
 		smtpPort = 4000 // Use a default value if conversion fails
 	}
+<<<<<<< HEAD
 	smtpUsername := os.Getenv("SMTP_USER")
 	smtpPassword := os.Getenv("SMTP_PASS")
 	smtpSender := os.Getenv("SMTP_SENDER")
@@ -75,13 +88,22 @@ func main() {
 	fmt.Printf("SMTP_PORT: %d\n", smtpPort)
 	fmt.Printf("SMTP_USERNAME: %s\n", smtpUsername)
 
+=======
+	smtpUsername := os.Getenv("SMTP_USERNAME")
+	smtpPassword := os.Getenv("SMTP_PASSWORD")
+	smtpSender := os.Getenv("SMTP_SENDER")
+>>>>>>> origin/UC05
 	corsTrustOrigin := os.Getenv("CORS_TRUST_ORIGIN")
 	jwtSecret := os.Getenv("JWT_SECRET")
 	var cfg config
 	//go run ./cmd/api -help for more information
 	flag.IntVar(&cfg.port, "port", 4000, "API server port")
 	flag.StringVar(&cfg.env, "env", "development", "Environment (development|staging|production)")
+<<<<<<< HEAD
 	flag.StringVar(&cfg.db.dsn, "db-dsn", dbDsn, "PostgreSQL DSN")
+=======
+	flag.StringVar(&cfg.db.dsn, "db-dsn", dbDns, "PostgreSQL DSN")
+>>>>>>> origin/UC05
 	fmt.Printf("DB DSN: %s\n", cfg.db.dsn)
 	flag.IntVar(&cfg.db.maxOpenConns, "db-max-open-conns", 25, "PostgreSQL max open connections")
 	flag.IntVar(&cfg.db.maxIdleConns, "db-max-idle-conns", 25, "PostgreSQL max idle connections")
@@ -124,8 +146,11 @@ func main() {
 	//defer redisClient.Close()
 	//logger.PrintInfo("Redis connection established", nil)
 
+<<<<<<< HEAD
 	redisLocal := NewRedisLocal()
 
+=======
+>>>>>>> origin/UC05
 	db, err := openDB(cfg)
 	if err != nil {
 		logger.PrintFatal(err, nil)
@@ -143,7 +168,11 @@ func main() {
 			cfg.smtp.username,
 			cfg.smtp.password,
 			cfg.smtp.sender),
+<<<<<<< HEAD
 		redis: redisLocal,
+=======
+		//redis: redisClient,
+>>>>>>> origin/UC05
 	}
 
 	srv := &http.Server{
@@ -185,6 +214,7 @@ func openDB(cfg config) (*sql.DB, error) {
 	return db, nil
 }
 
+<<<<<<< HEAD
 func openRedis(cfg config) (*redis.Client, error) {
 	//opt := &redis.Options{
 	//	Addr:        cfg.redis.addr,
@@ -214,3 +244,34 @@ func openRedis(cfg config) (*redis.Client, error) {
 
 	return client, nil
 }
+=======
+//func openRedis(cfg config) (*redis.Client, error) {
+//	//opt := &redis.Options{
+//	//	Addr:        cfg.redis.addr,
+//	//	Password:    cfg.redis.password, // Leave empty for no password
+//	//	DB:          cfg.redis.db,       // Default DB
+//	//	DialTimeout: 10 * time.Second,
+//	//	Username:    "default",
+//	//}
+//
+//	opt := &redis.Options{
+//		Addr:     "redis-15133.c252.ap-southeast-1-1.ec2.redns.redis-cloud.com:15133",
+//		Username: "default",
+//		Password: "1JMxgARJe3EDrZlRo7NDQBFsYN1C4JOT",
+//		DB:       0,
+//	}
+//	client := redis.NewClient(opt)
+//
+//	fmt.Printf("Redis connection established at %s", opt.Addr)
+//	// Test the connection
+//	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+//	defer cancel()
+//
+//	_, err := client.Ping(ctx).Result()
+//	if err != nil {
+//		return nil, err
+//	}
+//
+//	return client, nil
+//}
+>>>>>>> origin/UC05
