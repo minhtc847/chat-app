@@ -4,7 +4,26 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a7caf751-c97f-4ccb-8f1f-8e84ea211786" name="Changes" comment="xml file" />
+    <list default="true" id="a7caf751-c97f-4ccb-8f1f-8e84ea211786" name="Changes" comment="xml file">
+      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_12_11_2024_10_16_PM_[Changes]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_12_11_2024_10_16_PM__Changes_.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BE/cmd/api/channels.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BE/cmd/api/context.go" beforeDir="false" afterPath="$PROJECT_DIR$/BE/cmd/api/context.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BE/cmd/api/friendships.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BE/cmd/api/helpers.go" beforeDir="false" afterPath="$PROJECT_DIR$/BE/cmd/api/helpers.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BE/cmd/api/members.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BE/cmd/api/routers.go" beforeDir="false" afterPath="$PROJECT_DIR$/BE/cmd/api/routers.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BE/cmd/api/tokens.go" beforeDir="false" afterPath="$PROJECT_DIR$/BE/cmd/api/tokens.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BE/internal/data/channel.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BE/internal/data/friends.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BE/internal/data/mailer/templates/user_welcome.tmpl" beforeDir="false" afterPath="$PROJECT_DIR$/BE/internal/data/mailer/templates/user_welcome.tmpl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BE/internal/data/member.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BE/internal/data/models.go" beforeDir="false" afterPath="$PROJECT_DIR$/BE/internal/data/models.go" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -26,18 +45,18 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "minhtc847"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;minhtc847&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/minhtc847/chat-app.git",
-    "accountId": "3399c0e2-1ea8-46e6-bebc-99fb8e54cabb"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/minhtc847/chat-app.git&quot;,
+    &quot;accountId&quot;: &quot;3399c0e2-1ea8-46e6-bebc-99fb8e54cabb&quot;
   }
-}]]></component>
+}</component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -59,7 +78,7 @@
     "RunOnceActivity.go.migrated.go.modules.settings": "true",
     "RunOnceActivity.go.modules.automatic.dependencies.download": "true",
     "com.codeium.enabled": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "Merging main",
     "go.import.settings.migrated": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/FPT/go-learn/chatapp/chat-app/BE",
@@ -116,6 +135,7 @@
       <workItem from="1734423236349" duration="7672000" />
       <workItem from="1734431330906" duration="78000" />
       <workItem from="1734520136901" duration="23000" />
+      <workItem from="1734520349272" duration="17000" />
     </task>
     <task id="LOCAL-00001" summary="add func make friend">
       <option name="closed" value="true" />

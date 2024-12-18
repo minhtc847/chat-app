@@ -34,22 +34,6 @@ type Models struct {
 		GetByProfiles(profileOneId, profileTwoId uuid.UUID) (*Conversations, error)
 		Delete(id uuid.UUID) error
 	}
-
-	Friends interface {
-		GetAllFriends(userID uuid.UUID) (*[]uuid.UUID, error)
-		SendInvite(requesterID, receiverID uuid.UUID) error
-		GetInvite(requesterID, receiverID uuid.UUID) (*Friendship, error)
-		ConfirmInvite(friendshipID uuid.UUID, status string) error
-	}
-
-	Channel interface {
-		CreateChannel(nameChannel string, userID uuid.UUID) error
-		ExistsChannel(channelID uuid.UUID) (bool, error)
-	}
-
-	Member interface {
-		AddMembers(channelID uuid.UUID, userIDs []uuid.UUID) error
-	}
 }
 
 func NewModels(db *sql.DB) Models {
@@ -59,8 +43,5 @@ func NewModels(db *sql.DB) Models {
 		Conversations: ConversationModel{
 			DB: db,
 		},
-		Friends: ProfileModel{DB: db},
-		Channel: ProfileModel{DB: db},
-		Member:  ProfileModel{DB: db},
 	}
 }

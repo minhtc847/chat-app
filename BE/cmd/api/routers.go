@@ -20,6 +20,7 @@ func (app *application) routes() http.Handler {
 	router.HandlerFunc(http.MethodGet, "/users/activate", app.activateUserHandler)
 	router.HandlerFunc(http.MethodPost, "/users/login", app.createAuthenticationJWTTokenHandler)
 	router.HandlerFunc(http.MethodGet, "/users/logout", app.requireAuthenticatedUser(app.logout))
+
 	router.HandlerFunc(http.MethodGet, "/friends", app.requireAuthenticatedUser(app.getFriendsHandler))
 	router.HandlerFunc(http.MethodPost, "/friends/:id", app.requireAuthenticatedUser(app.sendInviteHandler))
 	router.HandlerFunc(http.MethodPut, "/friends/:id/:status", app.requireAuthenticatedUser(app.confirmInviteHandler))

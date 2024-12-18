@@ -90,7 +90,7 @@ func (app *application) logout(w http.ResponseWriter, r *http.Request) {
 
 	token := app.contextGetToken(r)
 	userId := app.contextGetUser(r).ID.String()
-	err := app.redis.storeLogoutToken(*token, userId, 24*time.Hour)
+	err := app.redis.storeLogoutToken(token, userId, 24*time.Hour)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 		return

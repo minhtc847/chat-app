@@ -3,7 +3,7 @@
 Hi,
 Thanks for signing up for a ChatApp account. We're excited to have you on board!
 For future reference, your user ID number is {{.userID}}.
-Please send a request to the `PUT /users/activated` endpoint with the following JSON
+Please send a request to the `http://localhost:4000/users/activate?token={{.activationToken}}` endpoint with the following JSON
 body to activate your account:
 {"token": "{{.activationToken}}"}
 Please note that this is a one-time use token and it will expire in 3 days.
@@ -21,7 +21,7 @@ The ChatApp Team
 <p>Hi,</p>
 <p>Thanks for signing up for a ChatApp account. We're excited to have you on board!</p>
 <p>For future reference, your user ID number is {{.userID}}.</p>
-<p>Please send a request to the <code>PUT /users/activated</code> endpoint with the
+<p>Please send a request to the <a href="http://localhost:4000/users/activate?token={{.activationToken}}">Activate</a> endpoint with the
 following JSON body to activate your account:</p>
 <pre><code>
 {"token": "{{.activationToken}}"}
